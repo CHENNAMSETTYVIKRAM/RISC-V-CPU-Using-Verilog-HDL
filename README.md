@@ -1,15 +1,17 @@
 # Verilog Digital Design Portfolio
 
-A hands-on Verilog portfolio exploring combinational arithmetic, sequential logic, a small ALU, and finite-state-machine control. The modules and explanations in this repository are written as a standalone learning project, with concepts informed by a review of the downloaded training examples documented in [the source review](docs/source-review.md).
+A hands-on Verilog portfolio exploring combinational arithmetic, sequential logic, a small ALU, and finite-state-machine control. This repository keeps the original exercises and adds a structured set of new modules and testbenches. The folder-by-folder review of the downloaded training material is in [docs/source-review.md](docs/source-review.md).
 
-## Projects
+## Project contents
 
 | Design | What it demonstrates | RTL |
 |---|---|---|
+| Bitwise half-adder exercise | Per-bit XOR and AND outputs; no carry propagation between bit positions | [`4bit_half_adder/half_adder4.v`](4bit_half_adder/half_adder4.v) |
+| Original 4-bit ALU exercise | Add, subtract, AND, OR, XOR and status flags | [`project/alu4bit/alu4.v`](project/alu4bit/alu4.v) |
 | 4-bit ripple-carry adder | Full-adder equations and carry propagation | [`rtl/ripple_adder_4bit.v`](rtl/ripple_adder_4bit.v) |
 | Registered adder | Clocked output, synchronous reset, one-cycle capture | [`rtl/registered_adder_4bit.v`](rtl/registered_adder_4bit.v) |
-| 4-bit ALU | Add, subtract, AND, OR, XOR, flags, default behavior | [`rtl/alu_4bit.v`](rtl/alu_4bit.v) |
-| Wash-cycle controller | Moore FSM, sensor handshakes, safe output defaults | [`rtl/wash_controller.v`](rtl/wash_controller.v) |
+| 4-bit ALU | Documented operations, flags and default behavior | [`rtl/alu_4bit.v`](rtl/alu_4bit.v) |
+| Wash-cycle controller | Moore FSM, sensor handshakes and safe output defaults | [`rtl/wash_controller.v`](rtl/wash_controller.v) |
 
 ## Design flow
 
@@ -42,7 +44,7 @@ flowchart LR
     FA3 --> S3[sum 3]
 ```
 
-## ALU operation codes
+## New ALU operation codes
 
 | `opcode` | Operation | `carry_borrow` meaning |
 |---|---|---|
@@ -74,7 +76,7 @@ This is a Moore-style controller: actuator outputs depend on the current state. 
 
 ## Simulation
 
-The self-checking testbenches are under `tb/`. With Icarus Verilog installed, run from the repository root:
+The new self-checking testbenches are under `tb/`. With Icarus Verilog installed, run from the repository root:
 
 ```sh
 iverilog -g2012 -s tb_ripple_adder_4bit -o work_adder rtl/ripple_adder_4bit.v tb/tb_ripple_adder_4bit.v
@@ -87,19 +89,21 @@ iverilog -g2012 -s tb_wash_controller -o work_fsm rtl/wash_controller.v tb/tb_wa
 vvp work_fsm
 ```
 
-The adder testbench exhausts all 512 input combinations. The ALU bench checks all supported operation classes and flags. The sequential and FSM benches check reset, state progression, and representative transitions. These are provided for you to run; no simulator run is claimed in this repository yet.
+The adder testbench exhausts all 512 input combinations. The ALU bench checks operation classes and flags. The sequential and FSM benches check reset, state progression and representative transitions. These are provided for you to run; no simulator run is claimed in this repository yet. The original exercises have their own demonstration benches in their respective folders.
 
 ## Repository map
 
 ```text
-rtl/       Synthesizable design modules
- tb/       Self-checking simulation testbenches
-docs/      Source review and design notes
+4bit_half_adder/  Original bitwise XOR/AND exercise
+project/          Original ALU exercise
+rtl/              Additional synthesizable design modules
+tb/               Self-checking testbenches for the additional modules
+docs/             Source review and design notes
 ```
 
 ## Scope and learning notes
 
-This is a collection of independent digital-design exercises, not a CPU or a complete RISC-V implementation. The downloaded processor exercise uses a custom instruction encoding and should not be described as ISA-compliant RISC-V. See [docs/source-review.md](docs/source-review.md) for the folder-by-folder audit and the design decisions made from it.
+This is a collection of digital-design exercises, not a CPU or a complete RISC-V implementation. The downloaded processor example uses a custom instruction encoding and should not be described as ISA-compliant RISC-V. See [docs/source-review.md](docs/source-review.md) for the source audit and design choices.
 
 ## License
 
