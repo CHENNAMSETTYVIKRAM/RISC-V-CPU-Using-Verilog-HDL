@@ -1,0 +1,9 @@
+*.vcd
+*.fst
+*.lxt
+*.lxt2
+*.vvp
+work_*
+obj_dir/
+transcript
+vsim.wlf
