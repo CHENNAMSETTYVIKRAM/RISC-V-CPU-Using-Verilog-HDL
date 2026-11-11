@@ -1,5 +1,12 @@
-# Simulation outputs
-*.vcd
+# Ignore Python and Markdown files
+*.py
+*.PY
+*.md
+*.MD
+__pycache__/
+*.pyc
+
+# Simulation outputs (temporary files)
 *.fst
 *.lxt
 *.lxt2

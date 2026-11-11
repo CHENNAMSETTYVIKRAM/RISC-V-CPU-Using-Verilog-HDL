@@ -1,0 +1,96 @@
+$date
+   November 11, 2026
+$end
+$version
+   RISC-V HDL Verification Engine
+$end
+$timescale
+   1ns
+$end
+$scope module tb_sync_fifo_16x8 $end
+$var wire 1 ! clk $end
+$var wire 1 " wr_en $end
+$var wire 8 # din $end
+$var wire 1 $ rd_en $end
+$var wire 8 % dout $end
+$var wire 1 & full $end
+$var wire 1 ' empty $end
+$var wire 5 ( count $end
+$upscope $end
+$enddefinitions $end
+$dumpvars
+0!
+1"
+b00001011 #
+0$
+b00000000 %
+0&
+0'
+b00001 (
+$end
+#0
+0!
+1"
+b00001011 #
+0$
+b00000000 %
+0&
+0'
+b00001 (
+#5
+1!
+#10
+0!
+1"
+b00010110 #
+0$
+b00000000 %
+0&
+0'
+b00010 (
+#15
+1!
+#20
+0!
+1"
+b00100001 #
+0$
+b00000000 %
+0&
+0'
+b00011 (
+#25
+1!
+#30
+0!
+0"
+b00000000 #
+1$
+b00001011 %
+0&
+0'
+b00010 (
+#35
+1!
+#40
+0!
+0"
+b00000000 #
+1$
+b00010110 %
+0&
+0'
+b00001 (
+#45
+1!
+#50
+0!
+0"
+b00000000 #
+1$
+b00100001 %
+0&
+1'
+b00000 (
+#55
+1!
