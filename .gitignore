@@ -1,0 +1,13 @@
+# Simulation outputs
+*.vcd
+*.fst
+*.lxt
+*.lxt2
+*.vvp
+work_*
+work/
+obj_dir/
+transcript
+vsim.wlf
+*.wlf
+modelsim.ini

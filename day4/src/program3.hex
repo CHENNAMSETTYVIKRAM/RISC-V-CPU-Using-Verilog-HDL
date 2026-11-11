@@ -1,0 +1,26 @@
+// Program 3: Find maximum value in an array of 8 words in data memory
+// Inputs: mem[0..7] = [12, 45, 7, 89, 23, 56, 3, 34]
+// Expected Output: x3 = 89 (0x00000059)
+// Addr: Machine Code - Assembly Mnemonic
+// 0x00: 00000093 - addi x1, x0, 0     # Pointer = 0
+00000093
+// 0x04: 0000a183 - lw   x3, 0(x1)     # max = mem[0]
+0000a183
+// 0x08: 00408093 - addi x1, x1, 4     # Pointer = 4
+00408093
+// 0x0C: 00700113 - addi x2, x0, 7     # count = 7
+00700113
+// 0x10: 0000a203 - lw   x4, 0(x1)     # loop: current = mem[ptr]
+0000a203
+// 0x14: 00324463 - blt  x4, x3, 8     # if current < max, skip update
+00324463
+// 0x18: 00020193 - addi x3, x4, 0     # max = current
+00020193
+// 0x1C: 00408093 - addi x1, x1, 4     # skip: Pointer += 4
+00408093
+// 0x20: fff10113 - addi x2, x2, -1    # count--
+fff10113
+// 0x24: fe0116e3 - bne  x2, x0, -20   # loop back if count != 0
+fe0116e3
+// 0x28: 0000006f - jal  x0, 0         # end: halt
+0000006f

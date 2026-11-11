@@ -1,0 +1,24 @@
+// Program 5: Greatest Common Divisor (GCD) using repeated subtraction
+// Inputs: x1 = 48 (0x30), x2 = 18 (0x12)
+// Expected Output: x3 = GCD(48, 18) = 6 (0x00000006)
+// Addr: Machine Code - Assembly Mnemonic
+// 0x00: 03000093 - addi x1, x0, 48    # x1 = 48
+03000093
+// 0x04: 01200113 - addi x2, x0, 18    # x2 = 18
+01200113
+// 0x08: 00208c63 - beq  x1, x2, 24    # gcd_loop: if x1 == x2 goto gcd_done
+00208c63
+// 0x0C: 0020c663 - blt  x1, x2, 12    # if x1 < x2 goto sub_b
+0020c663
+// 0x10: 402080b3 - sub  x1, x1, x2    # x1 = x1 - x2
+402080b3
+// 0x14: ff5ff06f - jal  x0, -12       # goto gcd_loop
+ff5ff06f
+// 0x18: 40110133 - sub  x2, x2, x1    # sub_b: x2 = x2 - x1
+40110133
+// 0x1C: fedff06f - jal  x0, -20       # goto gcd_loop
+fedff06f
+// 0x20: 00008193 - addi x3, x1, 0     # gcd_done: x3 = x1
+00008193
+// 0x24: 0000006f - jal  x0, 0         # end: halt
+0000006f

@@ -1,0 +1,26 @@
+// Program 6: Software Shift-and-Add Multiplication (without hardware MUL)
+// Inputs: Multiplicand x1 = 13 (0x0D), Multiplier x2 = 11 (0x0B)
+// Expected Output: Product x3 = 143 (0x0000008F)
+// Addr: Machine Code - Assembly Mnemonic
+// 0x00: 00d00093 - addi x1, x0, 13    # Multiplicand = 13
+00d00093
+// 0x04: 00b00113 - addi x2, x0, 11    # Multiplier = 11
+00b00113
+// 0x08: 00000193 - addi x3, x0, 0     # Product Accumulator = 0
+00000193
+// 0x0C: 00010e63 - beq  x2, x0, 28    # mul_loop: if multiplier == 0 goto mul_done
+00010e63
+// 0x10: 00117213 - andi x4, x2, 1     # check LSB of multiplier
+00117213
+// 0x14: 00020463 - beq  x4, x0, 8     # if bit == 0 goto shift_step
+00020463
+// 0x18: 001181b3 - add  x3, x3, x1    # product += multiplicand
+001181b3
+// 0x1C: 00109093 - slli x1, x1, 1     # shift_step: multiplicand <<= 1
+00109093
+// 0x20: 00115113 - srli x2, x2, 1     # multiplier >>= 1
+00115113
+// 0x24: fe9ff06f - jal  x0, -24       # goto mul_loop
+fe9ff06f
+// 0x28: 0000006f - jal  x0, 0         # end: halt
+0000006f
