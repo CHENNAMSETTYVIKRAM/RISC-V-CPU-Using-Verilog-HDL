@@ -1,12 +1,10 @@
 # RISC-V RV32I + RV32M CPU & Digital Design Portfolio (Verilog HDL)
 
-A comprehensive, synthesizable, and rigorously verified Verilog HDL repository conforming to the **"Verilog RTL and RISC-V Practice Activities — 4-Day Student Assignment — Infoziant"** specification, featuring:
-1. **Single-Cycle & 5-Stage Pipelined RISC-V RV32I + RV32M Processor Architectures** (with Forwarding, Load-Use Interlock Hazard Detection, RV32M Multiplier/Divider, Sub-Word Memory Formatting, and Hardware Telemetry Profiling).
-2. **Complete 4-Day Workbook Structure** (`day1/`, `day2/`, `day3/`, `day4/`, `report/`) covering all 32 practice activities.
-3. **Standard Digital Design Building Blocks** (Parameterized ALU, Counters, Barrel Shifter, Register File, Ripple-Carry Adders, Encoders, Decoders, LFSR, Shift Registers, Edge Detectors, Button Debouncers).
-4. **Finite State Machine (FSM) & Memory Subsystems** (Synchronous RAM, ROM, FIFO, Watchdog Timer, Round-Robin Arbiter, Elevator, ATM, Traffic Light, Vending Machine, Sequence Detectors).
-5. **Six RISC-V Assembly Benchmarks** (Sum 1..10, Fibonacci, Array Max, In-Place Bubble Sort, Euclid GCD, Shift-and-Add Multiply).
-6. **Comprehensive Verification & Tooling Infrastructure** (Two-pass Python assembler, self-checking testbenches, automated cycle-accurate regression engine, IEEE 1364 VCD waveform generator, static synthesizability and lint validator).
+**Student / Contributor**: Kalasalingam Academy of Research and Education (Kalasalingam University)  
+**Assignment**: *Verilog RTL and RISC-V Practice Activities — 4-Day Intermediate Level Assignment*  
+**Trainer**: Yuvaraj Seenipandi, Trainer, Infoziant  
+**Git Commit**: `3ec47a9` on branch `master`  
+**Compliance**: **32 of 32 Workbook Activities Implemented and Verified**  
 
 ---
 
@@ -14,7 +12,7 @@ A comprehensive, synthesizable, and rigorously verified Verilog HDL repository c
 
 ### 5-Stage Pipelined RISC-V RV32I + RV32M Core
 
-The flagship processor implementation is a classic 5-stage RISC-V RV32I+M pipeline (`IF` -> `ID` -> `EX` -> `MEM` -> `WB`) featuring data forwarding, load-use interlock detection, hardware multiplication/division, sub-word load/store formatting, branch prediction flush, and non-intrusive runtime hardware performance telemetry.
+The processor implementation is a classic 5-stage RISC-V RV32I+M pipeline (`IF` -> `ID` -> `EX` -> `MEM` -> `WB`) featuring data forwarding, load-use interlock detection, hardware multiplication/division, sub-word load/store formatting, speculative branch redirection, and non-intrusive runtime hardware performance telemetry.
 
 ```mermaid
 flowchart LR
@@ -58,8 +56,8 @@ flowchart LR
 ### Key Processor Features
 
 - **RV32I Base Integer ISA (37 Instructions)**: Complete support for all arithmetic, logical, shift, comparison, load, store, branch, and jump instructions (`ADD`, `SUB`, `SLL`, `SLT`, `SLTU`, `XOR`, `SRL`, `SRA`, `OR`, `AND`, immediate variants, `LUI`, `AUIPC`, `JAL`, `JALR`, `BEQ`, `BNE`, `BLT`, `BGE`, `BLTU`, `BGEU`, `LB`, `LH`, `LW`, `LBU`, `LHU`, `SB`, `SH`, `SW`, `FENCE`, `ECALL`, `EBREAK`).
-- **RV32M Standard Extension (8 Instructions)**: Integer hardware multiplication and division (`MUL`, `MULH`, `MULHSU`, `MULHU`, `DIV`, `DIVU`, `REM`, `REMU`) with correct handling of division by zero and signed overflow.
-- **Sub-word Memory Addressing**: Byte-level offsets, zero-extension (`LBU`, `LHU`), sign-extension (`LB`, `LH`), and byte/halfword mask writes (`SB`, `SH`).
+- **RV32M Standard Extension (8 Instructions)**: Integer hardware multiplication and division (`MUL`, `MULH`, `MULHSU`, `MULHU`, `DIV`, `DIVU`, `REM`, `REMU`) with division by zero and signed overflow handling.
+- **Sub-word Memory Addressing**: Byte-level offsets, zero-extension (`LBU`, `LHU`), sign-extension (`LB`, `LH`), and byte/halfword writes (`SB`, `SH`).
 - **Hazard Handling**:
   - **EX-to-EX Forwarding**: Bypasses execution results from `EX/MEM` directly to `EX` operand inputs.
   - **MEM-to-EX Forwarding**: Bypasses writeback data from `MEM/WB` to `EX` operand inputs.
@@ -71,120 +69,141 @@ flowchart LR
 
 ---
 
-## 2. Repository Structure
+## 2. Daily Completion Checklist (Workbook Section 9)
+
+| Day | Core Activities (x.1 to x.4) | Additional Activities (x.5 to x.8) | Waveforms Saved | Git Commit Pushed |
+|:---:|:---:|:---:|:---:|:---:|
+| **Day 1** | [x] All 4 Completed | [x] All 4 Completed | [x] Saved in `day1/waves/` | [x] Committed (`3ec47a9`) |
+| **Day 2** | [x] All 4 Completed | [x] All 4 Completed | [x] Saved in `day2/waves/` | [x] Committed (`3ec47a9`) |
+| **Day 3** | [x] All 4 Completed | [x] All 4 Completed | [x] Saved in `day3/waves/` | [x] Committed (`3ec47a9`) |
+| **Day 4** | [x] All 4 Completed | [x] All 4 Completed | [x] Saved in `day4/waves/` | [x] Committed (`3ec47a9`) |
+
+---
+
+## 3. Repository Structure (Workbook Section 10)
 
 ```text
 RISC-V-CPU-Using-Verilog-HDL-main/
 ├── day1/                               # Day 1: RTL Building Blocks & Verification
-│   ├── src/                            # Synthesizable RTL (ALU, Counter, Shifter, Regfile, Adders, etc.)
-│   ├── tb/                             # Self-checking testbenches (including 200 random regfile ops)
-│   └── waves/                          # IEEE 1364 VCD waveforms (alu_parameterized, regfile_random)
+│   ├── src/                            # alu.v, counter.v, shifter.v, regfile.v, adder_sub.v, encoder.v, decoder.v, shiftreg.v, lfsr.v, debounce.v, edge_detect.v
+│   ├── tb/                             # alu_tb.v, counter_tb.v, shifter_tb.v, regfile_tb.v (200 random ops), adder_sub_tb.v, etc.
+│   └── waves/                          # VCD waveforms: alu_parameterized.vcd, regfile_random.vcd
 ├── day2/                               # Day 2: FSM Controllers & Memory Design
-│   ├── src/                            # FSMs (Seq Detector, Vending, Elevator, ATM, Traffic) & Memories (RAM, ROM, FIFO)
-│   ├── tb/                             # Self-checking testbenches
-│   └── waves/                          # VCD waveforms (sequence_detector, sync_fifo)
+│   ├── src/                            # seq_moore.v, seq_mealy.v, vending.v, fifo.v, traffic.v, atm.v, arbiter.v, ram.v, rom.v, rom.hex, watchdog.v
+│   ├── tb/                             # seq_tb.v, vending_tb.v, fifo_tb.v, traffic_tb.v, atm_tb.v, arbiter_tb.v, ram_tb.v, rom_tb.v, watchdog_tb.v
+│   └── waves/                          # VCD waveforms: sequence_detector.vcd, sync_fifo.vcd
 ├── day3/                               # Day 3: Extending Single-Cycle RISC-V CPU
-│   ├── src/                            # Complete Single-Cycle RV32I+M Core & Datapath modules
-│   ├── tb/                             # Single-cycle self-checking testbench
-│   └── waves/                          # VCD waveforms (single_cycle_programs)
+│   ├── src/                            # riscv_single_cycle.v & RV32I+M datapath modules
+│   ├── tb/                             # cpu_tb.v (Self-checking testbench for all programs)
+│   └── waves/                          # VCD waveforms: single_cycle_programs.vcd
 ├── day4/                               # Day 4: Pipeline Hazards, Analysis & Submission
-│   ├── src/                            # 5-Stage Pipelined RV32I+M Core with Hardware Telemetry & Hazard Unit
-│   ├── tb/                             # 5-stage pipeline self-checking testbench
-│   └── waves/                          # VCD waveforms (hazard_consecutive_raw, hazard_load_use, hazard_branch_flush)
-├── programs/                           # 6 Verified RISC-V Assembly Benchmark Programs
-│   ├── program1_sum.s / .hex           # Benchmark 1: Sum 1..10 (x3 = 55)
-│   ├── program2_fibonacci.s / .hex     # Benchmark 2: Fibonacci 10 Words in Memory
-│   ├── program3_max.s / .hex           # Benchmark 3: Array Maximum Search (x3 = 89)
-│   ├── program4_bubblesort.s / .hex    # Benchmark 4: In-place Bubble Sort (5 words)
-│   ├── program5_gcd.s / .hex           # Benchmark 5: Euclid GCD (48, 18) (x3 = 6)
-│   └── program6_shift_add_mul.s / .hex # Benchmark 6: Software Shift-and-Add Mul (13*11 = 143)
+│   ├── src/                            # riscv_core_5stage.v (with hardware telemetry), riscv_hazard_unit.v, hazard_test.s, branch_flush_test.s
+│   ├── tb/                             # cpu_pipe_tb.v (Pipelined testbench printing telemetry)
+│   └── waves/                          # 6 Before/After Hazard Waveforms: hazard1_raw_*.vcd, hazard2_loaduse_*.vcd, hazard3_branch_*.vcd
+├── programs/                           # All 6 Assembled RISC-V Assembly Benchmarks (.s and commented .hex)
+│   ├── program1.hex / program1_sum.s   # Program 1: Sum 1..10 (x3 = 55)
+│   ├── program2.hex / program2_fib.s   # Program 2: Fibonacci 10 Words in Memory
+│   ├── program3.hex / program3_max.s   # Program 3: Array Maximum (x3 = 89)
+│   ├── program4.hex / program4_sort.s  # Program 4: In-place Bubble Sort of 8 Words
+│   ├── program5.hex / program5_gcd.s   # Program 5: Euclid GCD (48, 18) (x3 = 6)
+│   ├── program6.hex / program6_mul.s   # Program 6: Software Shift-and-Add Multiply (13*11 = 143)
+│   ├── hazard_test.s / .hex            # Data hazard test program
+│   └── branch_flush_test.s / .hex      # Control hazard test program
 ├── report/                             # Technical Documentation & Compliance Reports
-│   ├── ARCHITECTURE.md                 # Full processor microarchitecture specification & diagrams
-│   ├── BUG_HUNT_REPORT.md              # 3 subtle bug fault injection experiments & testbench catch proof
+│   ├── ARCHITECTURE.md                 # Microarchitectural specification & 5-minute oral demo script
+│   ├── BUG_HUNT_REPORT.md              # 3 subtle fault-injection experiments & assertion proof
 │   ├── CPI_COMPARISON.md               # Empirical Single-Cycle vs 5-Stage Pipeline performance study
-│   ├── DESIGN_REVIEW.md                # RTL latch freedom, default cases & blocking assignment audit
-│   ├── FINAL_WORKBOOK_AUDIT.md         # Final compliance sign-off (32/32 activities complete)
+│   ├── DESIGN_REVIEW.md                # RTL latch freedom & assignment discipline audit
+│   ├── FINAL_WORKBOOK_AUDIT.md         # Final 32-activity compliance sign-off document
 │   ├── INSTRUCTION_CONTROL_TABLE.md    # 45-instruction control decode bus matrix
 │   ├── INSTRUCTION_COVERAGE.md         # Full RV32I + RV32M instruction coverage matrix (100%)
-│   ├── PIPELINE_HAZARD_REPORT.md       # Forwarding, stall, and flush timing analysis
-│   ├── VERIFICATION_REPORT.md          # 34 regression suites (700 assertions) detailed results
-│   ├── WAVEFORM_ANALYSIS.md            # Annotated execution trace & GTKWave analysis
-│   └── WORKBOOK_COMPLIANCE_MATRIX.md   # Complete 32-activity requirements traceability matrix
-├── rtl/                                # Global RTL modules (mirrored across day1..day4)
-├── scripts/                            # Tooling & Verification Automation
-│   ├── asm.py                          # Two-pass RV32I+M RISC-V assembler
-│   ├── generate_waveforms.py           # IEEE 1364 VCD simulation waveform tracer
-│   ├── lint_synth_check.py             # Synthesizability and static lint validator
-│   └── verify.py                       # Cycle-accurate regression simulator (34 suites, 700 checks)
+│   ├── PIPELINE_HAZARD_REPORT.md       # Forwarding, stall, and flush timing analysis with 6 waveforms
+│   ├── VERIFICATION_REPORT.md          # 39 regression suites (719 assertions) detailed logs
+│   ├── WAVEFORM_ANALYSIS.md            # Annotated cycle-by-cycle execution trace
+│   ├── WORKBOOK_COMPLIANCE_MATRIX.md   # Complete 32-activity requirements traceability matrix
+│   ├── coverage.md                     # Activity 3.7 coverage matrix deliverable
+│   └── bugs.md                         # Activity 3.8 bug-hunt deliverable
+├── FINAL_SUBMISSION_STATUS.md          # Complete submission status & verification disclosures
+├── scripts/
+│   ├── asm.py                          # Two-pass RV32I+M assembler
+│   ├── generate_waveforms.py           # IEEE 1364 VCD simulation waveform generator
+│   ├── lint_synth_check.py             # Static synthesizability and lint validator
+│   └── verify.py                       # Cycle-accurate regression simulator (39 suites, 719 checks)
 └── tb/                                 # Global Verilog testbench directory
 ```
 
 ---
 
-## 3. Verification & Benchmark Execution
+## 4. Verification & Simulation Execution
 
-### Quick Start: Automated Regression
-Execute all 34 test suites and 700 checks using the cycle-accurate regression engine:
-
+### Running the Regression Suite
 ```bash
 python scripts/verify.py
 ```
+*Current Execution Result*: **39 of 39 Test Suites Passed (719 Total Checks, 0 Failures)**.
 
-### Synthesis & Lint Validation
-Verify latch freedom, blocking/non-blocking discipline, and full synthesizability across all 33 RTL source modules:
-
+### Running the Static Lint Validator
 ```bash
 python scripts/lint_synth_check.py
 ```
+*Current Execution Result*: **33 of 33 RTL Source Files Clean (0 Errors, 0 Warnings, 0 Inferred Latches)**.
 
-### Generate Simulation Waveforms (VCD)
-Generate GTKWave-compatible IEEE 1364 VCD waveform traces across Day 1, Day 2, Day 3, and Day 4:
-
+### Re-Generating Simulation Waveforms (VCD)
 ```bash
 python scripts/generate_waveforms.py
 ```
 
-### Assemble Custom RISC-V Programs
-Assemble any RV32I or RV32M assembly source file into hexadecimal machine code words:
-
-```bash
-python scripts/asm.py programs/program1_sum.s
-```
+### Toolchain Disclosure & Known Limitations
+- **No Native Simulator Installed**: Neither ModelSim (`vsim`) nor Icarus Verilog (`iverilog`) is installed in the local environment. All automated regression checks were executed via the Python cycle-accurate simulator (`scripts/verify.py`), which models stage registers, forwarding multiplexers, and hazard interlocks. Native Verilog testbenches (`cpu_tb.v`, `cpu_pipe_tb.v`) are provided for direct execution when ModelSim or Icarus is available.
+- **No Physical FPGA Synthesis**: No commercial or open-source logic synthesis tool (Xilinx Vivado, Intel Quartus) was executed. Consequently, no physical place-and-route timing reports or Worst Negative Slack (WNS) are claimed.
 
 ---
 
-## 4. Architectural Comparison: Single-Cycle vs 5-Stage Pipeline
+## 5. Architectural Performance & CPI Comparison
 
-| Benchmark Program | Instructions Retired ($N_{inst}$) | Single-Cycle CPI | 5-Stage Cycles | 5-Stage Stalls | 5-Stage Flushes | 5-Stage CPI | Pipeline Speedup |
+### Activity 4.3 Core Benchmarks Comparison
+
+| Program ID | Benchmark Program | Retired Instructions ($N$) | Single-Cycle Cycles | Single-Cycle CPI | 5-Stage Cycles | 5-Stage Stalls | 5-Stage Flushes | 5-Stage CPI |
+|:---:|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **3.2(a)** | Sum of 1 to 10 | 32 | 32 | 1.000 | 54 | 10 | 10 | **1.688** |
+| **3.2(c)** | Array Maximum (8 Words) | 18 | 18 | 1.000 | 31 | 6 | 3 | **1.722** |
+
+### Activity 4.7 Extended Program Runs (All Six Programs)
+
+| Benchmark Program | Instructions Retired ($N$) | Single-Cycle Cycles | Single-Cycle CPI | 5-Stage Cycles | 5-Stage Stalls | 5-Stage Flushes | Individual CPI |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Program 1: Sum 1..10** | 30 | 1.000 | 52 | 9 | 9 | 1.733 | **2.31x** |
-| **Program 2: Fibonacci** | 64 | 1.000 | 83 | 8 | 8 | 1.297 | **3.08x** |
-| **Program 3: Array Max** | 18 | 1.000 | 31 | 6 | 6 | 1.722 | **2.32x** |
-| **Program 4: Bubble Sort** | 91 | 1.000 | 124 | 20 | 20 | 1.363 | **2.94x** |
-| **Program 5: Euclid GCD** | 20 | 1.000 | 36 | 7 | 7 | 1.800 | **2.22x** |
-| **Program 6: Shift-Add Mul**| 27 | 1.000 | 39 | 4 | 4 | 1.444 | **2.77x** |
-| **AVERAGE** | **41.7** | **1.000** | **60.8** | **9.0** | **9.0** | **1.560** | **2.61x** |
+| **Program 1: Sum 1..10** | 32 | 32 | 1.000 | 54 | 10 | 10 | 1.688 |
+| **Program 2: Fibonacci (10 Words)** | 64 | 64 | 1.000 | 83 | 8 | 8 | 1.297 |
+| **Program 3: Array Maximum (8 Words)** | 18 | 18 | 1.000 | 31 | 6 | 3 | 1.722 |
+| **Program 4: Bubble Sort (8 Words)** | 235 | 235 | 1.000 | 334 | 62 | 34 | 1.421 |
+| **Program 5: Euclid GCD (48, 18)** | 20 | 20 | 1.000 | 36 | 7 | 7 | 1.800 |
+| **Program 6: Shift-Add Mul (13x11)** | 27 | 27 | 1.000 | 39 | 4 | 4 | 1.444 |
+| **CUMULATIVE TOTALS** | **396** | **396** | - | **577** | **97** | **66** | - |
 
-*Critical Path Analysis*: Although the single-cycle core completes instructions with a CPI of 1.0, its long critical path ($T_{clk} \approx 10\text{ ns}$, 100 MHz) limits throughput. The 5-stage pipeline achieves a clock period $T_{clk} \approx 2.5\text{ ns}$ (400 MHz), yielding an empirical **2.61x average speedup** across all benchmark programs.
+- **Arithmetic Mean of Individual Program CPIs**: **1.562**
+- **Aggregate Workload CPI ($\frac{\sum \text{Cycles}}{\sum \text{Instructions}} = \frac{577}{396}$)**: **1.457**  
+  *(The aggregate CPI is lower than the arithmetic mean because the longest program, Bubble Sort with 235 instructions, amortizes the fixed startup latency).*
 
 ---
 
-## 5. Technical Documentation Index
+## 6. Technical Deliverables Index
 
-- [WORKBOOK_COMPLIANCE_MATRIX.md](report/WORKBOOK_COMPLIANCE_MATRIX.md): Detailed compliance status for all 32 workbook activities.
-- [ARCHITECTURE.md](report/ARCHITECTURE.md): Microarchitectural specifications, datapath schematics, hazard logic, and telemetry counters.
-- [INSTRUCTION_CONTROL_TABLE.md](report/INSTRUCTION_CONTROL_TABLE.md): Complete 45-instruction control signal decode table.
-- [INSTRUCTION_COVERAGE.md](report/INSTRUCTION_COVERAGE.md): Comprehensive 45-instruction verification evidence matrix.
-- [PIPELINE_HAZARD_REPORT.md](report/PIPELINE_HAZARD_REPORT.md): Forwarding and stall timing analysis with timing diagrams.
-- [CPI_COMPARISON.md](report/CPI_COMPARISON.md): Empirical cycle, CPI, frequency, and speedup analysis across 6 benchmark programs.
-- [DESIGN_REVIEW.md](report/DESIGN_REVIEW.md): RTL latch freedom, default cases, and blocking/non-blocking assignment audit.
-- [BUG_HUNT_REPORT.md](report/BUG_HUNT_REPORT.md): Three controlled bug fault-injection experiments and assertion proof.
-- [WAVEFORM_ANALYSIS.md](report/WAVEFORM_ANALYSIS.md): Annotated cycle-by-cycle simulation trace and waveform analysis.
-- [VERIFICATION_REPORT.md](report/VERIFICATION_REPORT.md): Comprehensive regression logs across 34 suites and 700 assertions.
+- [FINAL_SUBMISSION_STATUS.md](FINAL_SUBMISSION_STATUS.md): Complete submission status and verification disclosure audit.
+- [WORKBOOK_COMPLIANCE_MATRIX.md](report/WORKBOOK_COMPLIANCE_MATRIX.md): Detailed compliance trace for all 32 workbook activities.
+- [CPI_COMPARISON.md](report/CPI_COMPARISON.md): Reproducible cycle, stall, flush, and CPI analysis.
+- [PIPELINE_HAZARD_REPORT.md](report/PIPELINE_HAZARD_REPORT.md): Detailed timing analysis of the six before/after hazard waveforms.
+- [VERIFICATION_REPORT.md](report/VERIFICATION_REPORT.md): Toolchain detection results and full regression logs.
+- [ARCHITECTURE.md](report/ARCHITECTURE.md): Microarchitectural specifications and 5-minute demonstration script.
+- [INSTRUCTION_CONTROL_TABLE.md](report/INSTRUCTION_CONTROL_TABLE.md): Complete 45-instruction control decode table.
+- [INSTRUCTION_COVERAGE.md](report/INSTRUCTION_COVERAGE.md): 45-instruction verification evidence matrix.
+- [coverage.md](coverage.md): Activity 3.7 instruction coverage matrix.
+- [bugs.md](bugs.md): Activity 3.8 fault-injection experiments and assertion proof.
+- [DESIGN_REVIEW.md](report/DESIGN_REVIEW.md): RTL latch freedom and blocking assignment audit.
+- [WAVEFORM_ANALYSIS.md](report/WAVEFORM_ANALYSIS.md): Annotated cycle-by-cycle simulation trace.
 - [FINAL_WORKBOOK_AUDIT.md](report/FINAL_WORKBOOK_AUDIT.md): Final audit certificate and sign-off.
 
 ---
 
-## 6. License
+## 7. License
 
 This repository is licensed under the MIT License. See [LICENSE](LICENSE) for details.

@@ -4,13 +4,13 @@
 - **Activity 4.3**: Core performance comparison on Programs 3.2(a) and 3.2(c) with 5-line conclusion  
 - **Activity 4.7**: Extended comparison covering all six programs with cycles, instructions, stalls, and CPI  
 **Harness**: `scripts/verify.py` & Hardware Performance Telemetry Registers (`riscv_core_5stage.v`)  
-**Timing Disclosure**: All cycle counts are measured from cycle-accurate simulations. Theoretical frequency comparisons are based on analytical path estimation; physical FPGA synthesis timing was not run due to lack of an installed FPGA toolchain.
+**Simulation Disclosure**: All cycle counts were measured using the cycle-accurate architectural simulator. Native Verilog EDA simulation (ModelSim/Icarus) and physical FPGA synthesis were not performed due to toolchain unavailability in the host environment.
 
 ---
 
 ## 1. Activity 4.3: Core Performance Comparison & 5-Line Conclusion
 
-As specified in Activity 4.3, benchmark programs **3.2(a) [Sum of 1 to 10]** and **3.2(c) [Array Maximum of 8 Words]** were executed on both the Single-Cycle RISC-V CPU (`riscv_single_cycle.v`) and the 5-Stage Pipelined RISC-V CPU (`riscv_core_5stage.v`).
+As specified in Activity 4.3, benchmark programs **3.2(a) [Sum of 1 to 10]** and **3.2(c) [Array Maximum of 8 Words]** were evaluated on both the Single-Cycle RISC-V CPU (`riscv_single_cycle.v`) and the 5-Stage Pipelined RISC-V CPU (`riscv_core_5stage.v`).
 
 ### Activity 4.3 Comparison Table
 
@@ -30,33 +30,41 @@ As specified in Activity 4.3, benchmark programs **3.2(a) [Sum of 1 to 10]** and
 
 ## 2. Activity 4.7: Extended Program Runs Across All Six Benchmarks
 
-In Activity 4.7, the remaining programs—**Program 4 (Bubble Sort of 8 Words)**, **Program 5 (Euclid GCD)**, and **Program 6 (Shift-and-Add Multiplication)**—along with **Program 2 (Fibonacci)** were executed on the pipelined CPU and verified against the single-cycle CPU.
+In Activity 4.7, all six programs—**Program 1 (Sum)**, **Program 2 (Fibonacci)**, **Program 3 (Array Max)**, **Program 4 (Bubble Sort of 8 Words)**, **Program 5 (Euclid GCD)**, and **Program 6 (Shift-and-Add Multiplication)**—were executed and measured.
 
 ### Activity 4.7 Complete Suite Telemetry Table
 
-| Benchmark Program | Algorithmic Workload | Instructions Retired ($N$) | Single-Cycle Cycles | Single-Cycle CPI | 5-Stage Cycles | 5-Stage Stalls | 5-Stage Flushes | 5-Stage CPI |
+| Benchmark Program | Algorithmic Task | Instructions Retired ($N$) | Single-Cycle Cycles | Single-Cycle CPI | 5-Stage Cycles | 5-Stage Stalls | 5-Stage Flushes | Individual 5-Stage CPI |
 |---|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **Program 1** | Sum of 1 to 10 | 32 | 32 | 1.000 | 54 | 10 | 10 | 1.688 |
 | **Program 2** | Fibonacci 10 Words in Memory | 64 | 64 | 1.000 | 83 | 8 | 8 | 1.297 |
 | **Program 3** | Array Maximum (8 Words) | 18 | 18 | 1.000 | 31 | 6 | 3 | 1.722 |
 | **Program 4** | In-place Bubble Sort (8 Words) | 235 | 235 | 1.000 | 334 | 62 | 34 | 1.421 |
 | **Program 5** | Euclid GCD (48, 18) | 20 | 20 | 1.000 | 36 | 7 | 7 | 1.800 |
-| **Program 6** | Software Shift-and-Add Mul (13x11) | 27 | 27 | 1.000 | 39 | 4 | 4 | 1.444 |
-| **SUITE MEAN** | **Full Benchmark Suite Average** | **66.0** | **66.0** | **1.000** | **96.2** | **16.2** | **11.0** | **1.562** |
+| **Program 6** | Software Shift-Add Mul (13x11) | 27 | 27 | 1.000 | 39 | 4 | 4 | 1.444 |
+| **TOTALS** | **Cumulative Workload** | **396** | **396** | - | **577** | **97** | **66** | - |
 
 ---
 
-## 3. Analysis of Pipelining Overhead
+## 3. Distinction: Aggregate CPI vs Average Individual CPI
 
-The empirical average CPI for the 5-stage pipeline is **1.562**, compared to **1.000** for single-cycle execution:
-1. **Compulsory Startup Overhead**: In short routines, the initial 4 cycles required to fill stages `IF`, `ID`, `EX`, `MEM`, and `WB` contribute noticeably to CPI ($\frac{4}{N}$).
-2. **Branch Misprediction Penalty**: Branches resolve in the `EX` stage. When taken, two instructions fetched into `IF` and `ID` must be flushed (2 bubble cycles per taken branch). In iterative loops like Program 1 and Bubble Sort, branch flushes are the largest source of extra cycles.
-3. **Load-Use Data Interlock**: When a register loaded by `LW` is immediately required by the following instruction's ALU operation, forwarding cannot supply the data in time, forcing a 1-cycle hardware bubble. Program 4 exhibits 62 stall cycles due to frequent load-compare patterns in inner-loop comparisons.
-4. **Throughput Scaling**: For long-running programs (e.g. Program 4 with 235 instructions), the CPI stabilizes closer to 1.42, demonstrating that pipelining amortizes fixed startup overhead over larger instruction volumes.
+When analyzing pipelined processor performance across a benchmark suite, it is vital to distinguish between the **Arithmetic Mean of Individual CPIs** and the **Aggregate Workload CPI**:
+
+### 3.1 Arithmetic Mean of Individual CPIs
+The arithmetic mean treats each benchmark equally regardless of execution length:
+$$\text{CPI}_{\text{avg\_individual}} = \frac{1}{6} \sum_{i=1}^6 \text{CPI}_i = \frac{1.688 + 1.297 + 1.722 + 1.421 + 1.800 + 1.444}{6} = \mathbf{1.562}$$
+
+### 3.2 Aggregate Workload CPI (True Execution Weighted CPI)
+The aggregate CPI reflects the actual efficiency across the total instruction stream:
+$$\text{CPI}_{\text{aggregate}} = \frac{\sum_{i=1}^6 \text{Cycles}_i}{\sum_{i=1}^6 \text{Instructions}_i} = \frac{577}{396} = \mathbf{1.457}$$
+
+### 3.3 Key Architectural Insight
+- The **Aggregate CPI (1.457)** is lower than the **Average Individual CPI (1.562)** because Program 4 (Bubble Sort, 235 instructions, CPI = 1.421) represents 59.3% of the total instructions executed across the suite.
+- As program length increases, the fixed 4-cycle pipeline startup cost is amortized, and steady-state execution throughput dominates.
 
 ---
 
 ## 4. Verification Limitations & Synthesis Disclaimer
 
-- **No Synthesis Timing Fabrication**: No physical FPGA synthesis tool (such as Xilinx Vivado or Intel Quartus) was installed or executed in this environment. Therefore, no physical Worst Negative Slack (WNS) or maximum clock frequency ($F_{max}$) figures are reported as empirical fact.
-- **Microarchitectural Theory**: Theoretically, a single-cycle datapath has a critical path equal to the sum of instruction memory, register file read, ALU, data memory, and register write setup time ($T_{single} \approx T_{IMEM} + T_{REG} + T_{ALU} + T_{DMEM} + T_{SETUP}$). In contrast, a 5-stage pipeline critical path is bounded by the slowest single stage plus register overhead ($\max(T_{stage}) + T_{CQ} + T_{SETUP}$). In real silicon, this allows pipelined architectures to run at 3x–4x higher clock frequency, which easily overcomes the 1.562 CPI penalty.
+- **No Native Verilog Simulation**: All numbers were collected via the cycle-accurate Python architectural simulator (`scripts/verify.py`), not through native event-driven EDA tools (ModelSim / Icarus Verilog).
+- **No Physical FPGA Synthesis**: No commercial or open-source logic synthesis tool (Xilinx Vivado, Intel Quartus, Yosys) was executed. Consequently, no physical place-and-route timing reports, Worst Negative Slack (WNS), or actual operating frequencies ($F_{max}$) are claimed.
